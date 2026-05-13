@@ -1,15 +1,20 @@
 Package: ProliferationAnalysis
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Proliferation modelling of division dyes with negative component
+Version: 0.1.2
+Author: Olivier Bakker
+Maintainer: Olivier Bakker <yourself@somewhere.net>
+Description: Fits Gaussian mixture models to flow cytometry proliferation traces
+    from division-tracking dyes such as CTV (Cell Trace Violet) and CFSE. Provides
+    automated estimation of peak number and position, followed by optimisation via
+    non-linear least squares (Levenberg-Marquardt) or maximum likelihood estimation.
+    Supports modelling of a dye-negative cell population (peak X) to account for
+    mixed stained and unstained samples. Calculates standard proliferation statistics
+    including proliferation index, division index, and percent divided.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports:
   minpack.lm
 Suggests: 

@@ -1,9 +1,7 @@
-
-
 #-------------------------------------------------------------------------------
-#' Plot intial parameter estimates
+#' Plot initial parameter estimates
 #'
-opt.plot.estimates <- function(cur.hist, y.smth, peak.stats, peak.0.lower.bound,peak.x.model, peak.x.mode, peak.x.upper.bound) {
+opt_plot_estimates <- function(cur.hist, y.smth, peak.stats, peak.0.lower.bound, peak.x.model, peak.x.mode, peak.x.upper.bound) {
 
   plot(cur.hist$mids,
        cur.hist$counts,
@@ -38,11 +36,10 @@ opt.plot.estimates <- function(cur.hist, y.smth, peak.stats, peak.0.lower.bound,
   }
 }
 
-
 #-------------------------------------------------------------------------------
 #' Plot optimization of parameters
 #'
-opt.plot.final <- function(x.mids, y, y.pred.optim, main="Optimal fit vs data") {
+opt_plot_final <- function(x.mids, y, y.pred.optim, main="Optimal fit vs data") {
 
   plot(x.mids, y,
        main=main,
@@ -61,7 +58,7 @@ opt.plot.final <- function(x.mids, y, y.pred.optim, main="Optimal fit vs data") 
 #-------------------------------------------------------------------------------
 #' Plot optimization of parameters per peak
 #'
-opt.plot.final.pp <- function(x.mids, y, ps,  main="Optimal fit vs data") {
+opt_plot_final_pp <- function(x.mids, y, ps, main="Optimal fit vs data") {
 
   plot(x.mids, y,
        main=main,
@@ -69,14 +66,10 @@ opt.plot.final.pp <- function(x.mids, y, ps,  main="Optimal fit vs data") {
        ylab="Count",
        pch=20,
        col="grey", bty="n")
-  #lines(y.pred.optim ~ x.mids, lwd=2, col="red")
 
   binwidth     <- (x.mids[2] - x.mids[1])
 
   for (i in 1:nrow(ps)) {
-
-    # Filter individual peaks to 4sd
-    #range    <- x[(x > (ps[i,]$opt_mean - 3.5* ps[i,]$opt_peak_sd)) &  (x < (ps[i,]$opt_mean + 3.5* ps[i,]$opt_peak_sd))]
     range <- x.mids
     y.single <- dnorm(range,  ps[i,]$opt_mean, ps[i,]$opt_peak_sd)
     y.single <- y.single * ps[i,]$peak_area_prop/100
@@ -85,7 +78,7 @@ opt.plot.final.pp <- function(x.mids, y, ps,  main="Optimal fit vs data") {
     lines(range, y.single, col="black")
   }
 
-  dens <- exp(prolif.model.density(ps$opt_mean, ps$opt_peak_sd, ps$peak_area_prop, x.mids, log=T))
+  dens <- exp(prolif_model_density(ps$opt_mean, ps$opt_peak_sd, ps$peak_area_prop, x.mids, log=T))
   lines(x.mids, (dens*binwidth) *sum(ps$peak_events), col="red", lwd=2)
 
   legend("topleft",
@@ -95,10 +88,9 @@ opt.plot.final.pp <- function(x.mids, y, ps,  main="Optimal fit vs data") {
 }
 
 #-------------------------------------------------------------------------------
-#' Plot optimization of parameters
+#' Plot optimization trace showing convergence of parameters
 #'
-#'
-opt.plot.params <- function(x, opt.env) {
+opt_plot_params <- function(x, opt.env) {
 
   n     <- ncol(opt.env[["means"]])
   cols  <- palette.colors(n = n, recycle = T)
@@ -138,11 +130,11 @@ opt.plot.params <- function(x, opt.env) {
     }
   }
 
-
   legend("right",
          legend=paste0("Gen", 0:(n-1)),
          fill=cols,
          bty="n")
+
   #--------------------------------------------------------------------------
   # SD
   plot(1:n.iter,
@@ -168,6 +160,7 @@ opt.plot.params <- function(x, opt.env) {
          legend=paste0("Gen", 0:(n-1)),
          fill=cols,
          bty="n")
+
   #--------------------------------------------------------------------------
   # Summit
   plot(1:n.iter,
