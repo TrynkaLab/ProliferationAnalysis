@@ -17,6 +17,30 @@ opt_prolif_model_mle(
   log = T
 )
 }
+\arguments{
+\item{x}{numeric vector of raw log10 intensities (one value per event).}
+
+\item{starts}{named list of starting parameter values.}
+
+\item{upper}{named numeric vector of upper bounds for each parameter.}
+
+\item{lower}{named numeric vector of lower bounds for each parameter.}
+
+\item{fixed}{named numeric vector of fixed parameters excluded from optimisation.}
+
+\item{peak.stats}{data frame of initial peak estimates from \code{find_initial_peaks}.}
+
+\item{plot}{logical; if TRUE produce diagnostic plots of the fit (default FALSE).}
+
+\item{opt.env}{optional environment for logging parameter traces (default NULL).}
+
+\item{verbose}{logical; if TRUE print parameter values at each iteration (default FALSE).}
+
+\item{log}{logical; if TRUE use log-scale density in the likelihood (default TRUE).}
+}
+\value{
+named numeric vector of optimised parameters (free + fixed).
+}
 \description{
 Optimize a proliferation model using maximum likelihood
 }

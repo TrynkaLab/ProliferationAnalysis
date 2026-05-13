@@ -6,6 +6,23 @@
 \usage{
 prolif_resid(par, n.peaks, x, y, fixed = NULL, opt.env = NULL)
 }
+\arguments{
+\item{par}{named numeric vector of model parameters (see \code{prolif_model_wrapper}).}
+
+\item{n.peaks}{integer number of peaks in the model.}
+
+\item{x}{numeric vector of histogram midpoints (log10 scale).}
+
+\item{y}{numeric vector of observed counts (smoothed or raw) matching x in length.}
+
+\item{fixed}{named numeric vector of fixed parameters (default NULL).}
+
+\item{opt.env}{optional environment for logging parameter traces (default NULL).}
+}
+\value{
+numeric vector of residuals (observed minus predicted) for use with
+  \code{\link[minpack.lm]{nls.lm}}.
+}
 \description{
 Residuals between observed CTV trace and Gaussian prolif model
 }

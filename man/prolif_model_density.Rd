@@ -14,6 +14,26 @@ prolif_model_density(
   opt.env = NULL
 )
 }
+\arguments{
+\item{means}{numeric vector of peak means (log10 scale).}
+
+\item{sd}{numeric vector of peak standard deviations, one per peak.}
+
+\item{summits}{numeric vector of mixture weights (will be normalised to sum to 1).}
+
+\item{x}{numeric vector of x values at which to evaluate the density.}
+
+\item{verbose}{logical; if TRUE print parameter values at each call (default FALSE).}
+
+\item{log}{logical; if TRUE return log-density using the log-sum-exp trick for
+numerical stability (default FALSE).}
+
+\item{opt.env}{optional environment created by \code{opt_new_env} for logging
+parameter traces during optimisation (default NULL).}
+}
+\value{
+numeric vector of density (or log-density) values at each x.
+}
 \description{
 Density of mixture distribution of Gaussian
 }

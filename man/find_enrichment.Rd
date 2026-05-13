@@ -6,6 +6,18 @@
 \usage{
 find_enrichment(x, y, curpeak.mean, est.window)
 }
+\arguments{
+\item{x}{vector of x values (log10 intensity histogram midpoints).}
+
+\item{y}{vector of y values (counts or smoothed counts) matching x in length.}
+
+\item{curpeak.mean}{x position of the current peak mean.}
+
+\item{est.window}{half-width of the window used to locate the flanking valleys.}
+}
+\value{
+fold change of the peak summit over the mean of the two flanking valley counts.
+}
 \description{
 Find the relative enrichment over a valley
 }

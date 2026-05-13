@@ -18,6 +18,12 @@ prolif_single_peak <- function(x, mean, sd, summit) {
 #' @description
 #' Gaussian prolif model, it is a mixture distribution scaled by relative
 #' peak heights.
+#'
+#' @param means numeric vector of peak means (log10 scale).
+#' @param sd numeric vector of peak standard deviations, one per peak.
+#' @param summits numeric vector of peak heights (counts or relative weights).
+#' @param x numeric vector of x values at which to evaluate the model.
+#' @returns numeric vector of predicted y values (sum of scaled Gaussian densities).
 prolif_model <- function(means, sd, summits, x) {
 
   y.pred <- 0
@@ -33,6 +39,16 @@ prolif_model <- function(means, sd, summits, x) {
 #-------------------------------------------------------------------------------
 #' Density of mixture distribution of Gaussian
 #'
+#' @param means numeric vector of peak means (log10 scale).
+#' @param sd numeric vector of peak standard deviations, one per peak.
+#' @param summits numeric vector of mixture weights (will be normalised to sum to 1).
+#' @param x numeric vector of x values at which to evaluate the density.
+#' @param verbose logical; if TRUE print parameter values at each call (default FALSE).
+#' @param log logical; if TRUE return log-density using the log-sum-exp trick for
+#'   numerical stability (default FALSE).
+#' @param opt.env optional environment created by \code{opt_new_env} for logging
+#'   parameter traces during optimisation (default NULL).
+#' @returns numeric vector of density (or log-density) values at each x.
 prolif_model_density <- function(means, sd, summits, x, verbose=F, log=F, opt.env=NULL) {
   density <- 0
   summits <- summits/sum(summits)
@@ -80,6 +96,18 @@ prolif_model_density <- function(means, sd, summits, x, verbose=F, log=F, opt.en
 #-------------------------------------------------------------------------------
 #' Negative log likelihood of mixture distribution of Gaussian
 #'
+#' @param means numeric vector of peak means (log10 scale).
+#' @param sd numeric vector of peak standard deviations, one per peak.
+#' @param summits numeric vector of mixture weights (will be normalised to sum to 1).
+#' @param x numeric vector of observed data values (log10 intensities).
+#' @param verbose logical; if TRUE print the NLL at each call (default FALSE).
+#' @param log logical; if TRUE compute density on the log scale for numerical
+#'   stability (default TRUE).
+#' @param invert logical; if TRUE return the positive log likelihood instead of
+#'   the negative (default FALSE).
+#' @param opt.env optional environment created by \code{opt_new_env} for logging
+#'   parameter traces during optimisation (default NULL).
+#' @returns scalar negative log likelihood value.
 prolif_model_nll <- function(means, sd, summits, x, verbose=F, log=T, invert=F, opt.env=NULL) {
   density <- prolif_model_density(means, sd, summits, x, verbose=verbose, log=log, opt.env=opt.env)
 
@@ -103,7 +131,30 @@ prolif_model_nll <- function(means, sd, summits, x, verbose=F, log=T, invert=F, 
 #' Wrapper that returns a gaussian proliferation model.
 #'
 #' @description
-#' Takes a vector of parameters par, number of peaks, and data X
+#' Takes a named parameter vector, unpacks it into means, summits, and SDs, and
+#' dispatches to the requested model type. Used as the objective function passed
+#' to \code{optim} or \code{nls.lm}.
+#'
+#' @param par named numeric vector of model parameters. Expected names follow the
+#'   convention \code{gen0.mean}, \code{gen0.summit}, ..., \code{peak.sd} and
+#'   optionally \code{genX.sd}.
+#' @param n.peaks integer number of peaks in the model.
+#' @param x numeric vector of x values (histogram midpoints or raw log10 intensities).
+#' @param fixed named numeric vector of fixed parameters to append to \code{par}
+#'   before unpacking (default NULL).
+#' @param type character string selecting the return value: \code{"prolif_model"}
+#'   (default, returns scaled counts), \code{"density"} (returns log-density),
+#'   or \code{"neg_log_likelihood"} (returns NLL scalar).
+#' @param verbose logical; if TRUE print parameter values at each call (default FALSE).
+#' @param opt.env optional environment created by \code{opt_new_env} for logging
+#'   parameter traces during optimisation (default NULL).
+#' @param invert logical; passed to \code{prolif_model_nll} when
+#'   \code{type="neg_log_likelihood"} (default FALSE).
+#' @param names character vector of parameter names; overridden by \code{names(par)}
+#'   if present (default NULL).
+#' @param log logical; if TRUE use log-scale density computation (default TRUE).
+#' @returns numeric vector (model predictions or density) or scalar NLL,
+#'   depending on \code{type}.
 prolif_model_wrapper <- function(par, n.peaks, x, fixed=NULL, type="prolif_model", verbose=F, opt.env=NULL, invert=F, names=NULL, log=T) {
 
   if (!is.null(names(par))) {
@@ -168,6 +219,15 @@ prolif_model_wrapper <- function(par, n.peaks, x, fixed=NULL, type="prolif_model
 
 #-------------------------------------------------------------------------------
 #' Residuals between observed CTV trace and Gaussian prolif model
+#'
+#' @param par named numeric vector of model parameters (see \code{prolif_model_wrapper}).
+#' @param n.peaks integer number of peaks in the model.
+#' @param x numeric vector of histogram midpoints (log10 scale).
+#' @param y numeric vector of observed counts (smoothed or raw) matching x in length.
+#' @param fixed named numeric vector of fixed parameters (default NULL).
+#' @param opt.env optional environment for logging parameter traces (default NULL).
+#' @returns numeric vector of residuals (observed minus predicted) for use with
+#'   \code{\link[minpack.lm]{nls.lm}}.
 prolif_resid <- function(par, n.peaks, x, y, fixed=NULL, opt.env=NULL) {
   residuals <- y - prolif_model_wrapper(par, n.peaks, x, fixed, type="prolif_model", opt.env=opt.env)
   return(residuals)

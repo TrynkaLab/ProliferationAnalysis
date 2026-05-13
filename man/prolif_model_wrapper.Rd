@@ -17,6 +17,41 @@ prolif_model_wrapper(
   log = T
 )
 }
+\arguments{
+\item{par}{named numeric vector of model parameters. Expected names follow the
+convention \code{gen0.mean}, \code{gen0.summit}, ..., \code{peak.sd} and
+optionally \code{genX.sd}.}
+
+\item{n.peaks}{integer number of peaks in the model.}
+
+\item{x}{numeric vector of x values (histogram midpoints or raw log10 intensities).}
+
+\item{fixed}{named numeric vector of fixed parameters to append to \code{par}
+before unpacking (default NULL).}
+
+\item{type}{character string selecting the return value: \code{"prolif_model"}
+(default, returns scaled counts), \code{"density"} (returns log-density),
+or \code{"neg_log_likelihood"} (returns NLL scalar).}
+
+\item{verbose}{logical; if TRUE print parameter values at each call (default FALSE).}
+
+\item{opt.env}{optional environment created by \code{opt_new_env} for logging
+parameter traces during optimisation (default NULL).}
+
+\item{invert}{logical; passed to \code{prolif_model_nll} when
+\code{type="neg_log_likelihood"} (default FALSE).}
+
+\item{names}{character vector of parameter names; overridden by \code{names(par)}
+if present (default NULL).}
+
+\item{log}{logical; if TRUE use log-scale density computation (default TRUE).}
+}
+\value{
+numeric vector (model predictions or density) or scalar NLL,
+  depending on \code{type}.
+}
 \description{
-Takes a vector of parameters par, number of peaks, and data X
+Takes a named parameter vector, unpacks it into means, summits, and SDs, and
+dispatches to the requested model type. Used as the objective function passed
+to \code{optim} or \code{nls.lm}.
 }

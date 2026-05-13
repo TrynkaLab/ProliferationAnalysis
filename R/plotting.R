@@ -1,6 +1,14 @@
 #-------------------------------------------------------------------------------
 #' Plot initial parameter estimates
 #'
+#' @param cur.hist histogram object returned by \code{hist()}.
+#' @param y.smth numeric vector of smoothed counts (same length as histogram midpoints).
+#' @param peak.stats data frame of initial peak estimates from \code{find_initial_peaks}.
+#' @param peak.0.lower.bound numeric; lower bound used to locate generation 0.
+#' @param peak.x.model logical; whether a peak X is being modelled.
+#' @param peak.x.mode numeric; estimated log10 position of peak X, or NULL.
+#' @param peak.x.upper.bound numeric; hard upper limit for peak X position, or NULL.
+#' @returns NULL invisibly; called for its side effect of producing a plot.
 opt_plot_estimates <- function(cur.hist, y.smth, peak.stats, peak.0.lower.bound, peak.x.model, peak.x.mode, peak.x.upper.bound) {
 
   plot(cur.hist$mids,
@@ -39,6 +47,11 @@ opt_plot_estimates <- function(cur.hist, y.smth, peak.stats, peak.0.lower.bound,
 #-------------------------------------------------------------------------------
 #' Plot optimization of parameters
 #'
+#' @param x.mids numeric vector of histogram midpoints (log10 scale).
+#' @param y numeric vector of observed counts matching x.mids in length.
+#' @param y.pred.optim numeric vector of model-predicted counts matching x.mids.
+#' @param main character string plot title (default "Optimal fit vs data").
+#' @returns NULL invisibly; called for its side effect of producing a plot.
 opt_plot_final <- function(x.mids, y, y.pred.optim, main="Optimal fit vs data") {
 
   plot(x.mids, y,
@@ -58,6 +71,13 @@ opt_plot_final <- function(x.mids, y, y.pred.optim, main="Optimal fit vs data") 
 #-------------------------------------------------------------------------------
 #' Plot optimization of parameters per peak
 #'
+#' @param x.mids numeric vector of histogram midpoints (log10 scale).
+#' @param y numeric vector of observed counts matching x.mids in length.
+#' @param ps data frame of peak statistics as returned by \code{fit_peaks},
+#'   containing columns \code{opt_mean}, \code{opt_peak_sd}, \code{peak_area_prop},
+#'   and \code{peak_events}.
+#' @param main character string plot title (default "Optimal fit vs data").
+#' @returns NULL invisibly; called for its side effect of producing a plot.
 opt_plot_final_pp <- function(x.mids, y, ps, main="Optimal fit vs data") {
 
   plot(x.mids, y,
@@ -90,6 +110,12 @@ opt_plot_final_pp <- function(x.mids, y, ps, main="Optimal fit vs data") {
 #-------------------------------------------------------------------------------
 #' Plot optimization trace showing convergence of parameters
 #'
+#' @param x numeric vector of x values (histogram midpoints), used to set the
+#'   y-axis range of the means panel.
+#' @param opt.env environment created by \code{opt_new_env} and populated
+#'   during optimisation, containing \code{score}, \code{means}, \code{sd},
+#'   and \code{summits} matrices.
+#' @returns NULL invisibly; called for its side effect of producing plots.
 opt_plot_params <- function(x, opt.env) {
 
   n     <- ncol(opt.env[["means"]])

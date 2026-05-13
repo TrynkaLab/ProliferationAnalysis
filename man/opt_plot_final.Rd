@@ -6,6 +6,18 @@
 \usage{
 opt_plot_final(x.mids, y, y.pred.optim, main = "Optimal fit vs data")
 }
+\arguments{
+\item{x.mids}{numeric vector of histogram midpoints (log10 scale).}
+
+\item{y}{numeric vector of observed counts matching x.mids in length.}
+
+\item{y.pred.optim}{numeric vector of model-predicted counts matching x.mids.}
+
+\item{main}{character string plot title (default "Optimal fit vs data").}
+}
+\value{
+NULL invisibly; called for its side effect of producing a plot.
+}
 \description{
 Plot optimization of parameters
 }

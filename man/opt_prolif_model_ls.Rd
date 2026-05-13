@@ -16,6 +16,28 @@ opt_prolif_model_ls(
   opt.env = NULL
 )
 }
+\arguments{
+\item{x}{numeric vector of histogram midpoints (log10 scale).}
+
+\item{y}{numeric vector of smoothed counts matching x in length.}
+
+\item{starts}{named list of starting parameter values.}
+
+\item{upper}{named numeric vector of upper bounds for each parameter.}
+
+\item{lower}{named numeric vector of lower bounds for each parameter.}
+
+\item{fixed}{named numeric vector of fixed parameters excluded from optimisation.}
+
+\item{peak.stats}{data frame of initial peak estimates from \code{find_initial_peaks}.}
+
+\item{plot}{logical; if TRUE produce diagnostic plots of the fit (default FALSE).}
+
+\item{opt.env}{optional environment for logging parameter traces (default NULL).}
+}
+\value{
+named numeric vector of optimised parameters (free + fixed).
+}
 \description{
 Optimize a proliferation model using least squares
 }

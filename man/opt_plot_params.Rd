@@ -6,6 +6,17 @@
 \usage{
 opt_plot_params(x, opt.env)
 }
+\arguments{
+\item{x}{numeric vector of x values (histogram midpoints), used to set the
+y-axis range of the means panel.}
+
+\item{opt.env}{environment created by \code{opt_new_env} and populated
+during optimisation, containing \code{score}, \code{means}, \code{sd},
+and \code{summits} matrices.}
+}
+\value{
+NULL invisibly; called for its side effect of producing plots.
+}
 \description{
 Plot optimization trace showing convergence of parameters
 }

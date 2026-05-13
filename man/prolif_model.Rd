@@ -6,6 +6,18 @@
 \usage{
 prolif_model(means, sd, summits, x)
 }
+\arguments{
+\item{means}{numeric vector of peak means (log10 scale).}
+
+\item{sd}{numeric vector of peak standard deviations, one per peak.}
+
+\item{summits}{numeric vector of peak heights (counts or relative weights).}
+
+\item{x}{numeric vector of x values at which to evaluate the model.}
+}
+\value{
+numeric vector of predicted y values (sum of scaled Gaussian densities).
+}
 \description{
 Gaussian prolif model, it is a mixture distribution scaled by relative
 peak heights.

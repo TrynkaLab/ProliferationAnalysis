@@ -4,6 +4,8 @@ Fits Gaussian mixture models to flow cytometry proliferation traces from divisio
 
 Supports modelling of a dye-negative cell population (peak X) to account for mixed stained and unstained samples. Calculates standard proliferation statistics including proliferation index, division index, and percent divided.
 
+The input is expected to be raw per-event intensities of the division dye. If you have data on the log scale already, raise it by the exponent first. It is reccomended to pre-gate events to live cells prior to running, but trimming of the CTV+ and CTV- region is generally not needed. For gating CytoExploreR is a good option which allows for templating and processing large volumes of data
+
 # Installation
 To install, simply run
 ```

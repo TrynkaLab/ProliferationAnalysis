@@ -14,6 +14,24 @@ opt_plot_estimates(
   peak.x.upper.bound
 )
 }
+\arguments{
+\item{cur.hist}{histogram object returned by \code{hist()}.}
+
+\item{y.smth}{numeric vector of smoothed counts (same length as histogram midpoints).}
+
+\item{peak.stats}{data frame of initial peak estimates from \code{find_initial_peaks}.}
+
+\item{peak.0.lower.bound}{numeric; lower bound used to locate generation 0.}
+
+\item{peak.x.model}{logical; whether a peak X is being modelled.}
+
+\item{peak.x.mode}{numeric; estimated log10 position of peak X, or NULL.}
+
+\item{peak.x.upper.bound}{numeric; hard upper limit for peak X position, or NULL.}
+}
+\value{
+NULL invisibly; called for its side effect of producing a plot.
+}
 \description{
 Plot initial parameter estimates
 }

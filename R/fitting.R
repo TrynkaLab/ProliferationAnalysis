@@ -4,6 +4,11 @@ NULL
 #-------------------------------------------------------------------------------
 #' Create a new env for storing optimization trace
 #'
+#' @param n.peaks integer number of peaks; sets the number of columns in the
+#'   logged parameter matrices.
+#' @returns an environment with pre-allocated fields: \code{score} (numeric
+#'   vector), \code{means}, \code{sd}, and \code{summits} (matrices with
+#'   \code{n.peaks} columns).
 opt_new_env <- function(n.peaks) {
   opt.env              <- new.env()
   opt.env[["score"]]   <- c()
@@ -17,6 +22,17 @@ opt_new_env <- function(n.peaks) {
 #-------------------------------------------------------------------------------
 #' Optimize a proliferation model using maximum likelihood
 #'
+#' @param x numeric vector of raw log10 intensities (one value per event).
+#' @param starts named list of starting parameter values.
+#' @param upper named numeric vector of upper bounds for each parameter.
+#' @param lower named numeric vector of lower bounds for each parameter.
+#' @param fixed named numeric vector of fixed parameters excluded from optimisation.
+#' @param peak.stats data frame of initial peak estimates from \code{find_initial_peaks}.
+#' @param plot logical; if TRUE produce diagnostic plots of the fit (default FALSE).
+#' @param opt.env optional environment for logging parameter traces (default NULL).
+#' @param verbose logical; if TRUE print parameter values at each iteration (default FALSE).
+#' @param log logical; if TRUE use log-scale density in the likelihood (default TRUE).
+#' @returns named numeric vector of optimised parameters (free + fixed).
 opt_prolif_model_mle <- function(x, starts, upper, lower, fixed, peak.stats, plot=F, opt.env=NULL, verbose=F, log=T) {
 
   res <- optim(
@@ -73,6 +89,16 @@ opt_prolif_model_mle <- function(x, starts, upper, lower, fixed, peak.stats, plo
 #-------------------------------------------------------------------------------
 #' Optimize a proliferation model using least squares
 #'
+#' @param x numeric vector of histogram midpoints (log10 scale).
+#' @param y numeric vector of smoothed counts matching x in length.
+#' @param starts named list of starting parameter values.
+#' @param upper named numeric vector of upper bounds for each parameter.
+#' @param lower named numeric vector of lower bounds for each parameter.
+#' @param fixed named numeric vector of fixed parameters excluded from optimisation.
+#' @param peak.stats data frame of initial peak estimates from \code{find_initial_peaks}.
+#' @param plot logical; if TRUE produce diagnostic plots of the fit (default FALSE).
+#' @param opt.env optional environment for logging parameter traces (default NULL).
+#' @returns named numeric vector of optimised parameters (free + fixed).
 opt_prolif_model_ls <- function(x, y, starts, upper, lower, fixed, peak.stats, plot=F, opt.env=NULL) {
 
   res <- minpack.lm::nls.lm(
@@ -151,33 +177,44 @@ opt_prolif_model_ls <- function(x, y, starts, upper, lower, fixed, peak.stats, p
 #' @param bins number of bins for fitting (default 250)
 #' @param smoothing.window number of values up and downstream for the NN
 #' smoother (default 2)
-#' @param window.scaling.factors Controls the window in which initial peaks are found. Vector of length 2
-#' @param plot should results be plotted. Overrides plot.optim & plot.final
-#' @param plot.optim should optimization plots be plotted
-#' @param plot.final should final plot of optimized fit be plotted
-#' @param plot.main title for the plot
-#' @param opt.peak.pos.dev limits the range in x where peak positions can be
-#' optimized within. See @details
-#' @param opt.trim.left.tail  Should values that fall outside the initial model
-#' range be removed from optimization. See @details
-#' @param opt.trim.right.tail Should values that fall outside the initial model
-#' range be removed from optimization. See @details
-#' @param mode either LS for least squares or 'MLE' for maximum likelihood
-#' estimation based optimizer. See @details
-#' @param full.out If true output a list with everything needed to easily
-#' re-make plots. Useful if you want to regen plots in ggplot for instance.
-#' @param peak.thresh.enrich Fold change enrichment of a peak over its valleys
-#' @param peak.thresh.summit Relative height of a peak with respect to trace mode
-#' @param peak.x.model Should an extra peak be fit that models a trace negative
-#' population of cells. See @details
-#' @param peak.x.upper.bound If peak.x.model=T, specify the hard limit for
-#' finding the mode of peak x. Set to NULL for no limit. (default NULL)
-#' @param peak.x.thresh.summit Controls the automated detection of the mode of
-#' peak x. Only peaks with a % of the total data mode of this are considered.
-#' Should be valued between 0-1. (default 0.05)
-#' @param peak.x.thresh.enrich Similar to peak.thresh.enrich but for peak x.
-#' (default = 1.1)
-#' @param window.scaling.factors Scaling factors for peak finding See details (default c(0.25, 0.25))
+#' @param window.scaling.factors two-element vector scaling the search window
+#' left and right of each expected peak position during initial estimation
+#' (default c(0.25, 0.25)). See details.
+#' @param plot logical; if TRUE produce all plots. Overrides plot.optim and
+#' plot.final (default TRUE).
+#' @param plot.optim logical; if TRUE produce optimisation diagnostic plots
+#' (default TRUE).
+#' @param plot.final logical; if TRUE produce final per-peak fit plot (default TRUE).
+#' @param plot.main character string title for the plot (default "Proliferation model").
+#' @param opt.peak.pos.dev numeric; maximum allowed deviation of each peak mean
+#' from its initial estimate during optimisation. Defaults to half the estimated
+#' inter-peak distance (NULL). Set to Inf to remove constraint. See details.
+#' @param opt.trim.left.tail logical; if TRUE remove data points left of the
+#' leftmost initial peak estimate before optimisation (default FALSE). See details.
+#' @param opt.trim.right.tail logical; if TRUE remove data points right of the
+#' rightmost initial peak estimate before optimisation (default FALSE). See details.
+#' @param mode character string; \code{"LS"} for Levenberg-Marquardt non-linear
+#' least squares (default) or \code{"MLE"} for maximum likelihood estimation.
+#' See details.
+#' @param full.out logical; if TRUE return a list containing peak statistics,
+#' histogram object, x values, model predictions, and final parameters. If FALSE
+#' return only the peak statistics data frame (default FALSE).
+#' @param peak.x.model logical; if TRUE fit an additional unconstrained peak
+#' (peak X) to capture a dye-negative cell population (default FALSE). See details.
+#' @param peak.x.upper.bound numeric; hard upper limit (log10 scale) for the
+#' position of peak X. Set to NULL for no limit (default NULL).
+#' @param peak.x.position numeric; manually specify the starting position of
+#' peak X (log10 scale). If NULL, position is estimated automatically (default NULL).
+#' @param peak.x.fixed logical; if TRUE fix peak X at \code{peak.x.position}
+#' and do not optimise its mean (default FALSE).
+#' @param peak.x.thresh.summit numeric; minimum height of peak X relative to the
+#' trace mode for autodetection. Values between 0 and 1 (default 0.05).
+#' @param peak.x.thresh.enrich numeric; minimum fold enrichment of peak X over
+#' its flanking valleys for autodetection (default 1.2).
+#' @param verbose logical; if TRUE print optimisation parameter values at each
+#' iteration (default FALSE).
+#' @param log logical; if TRUE use log-scale density in MLE mode (default TRUE).
+#' @param ... additional arguments passed to \code{find_initial_peaks}.
 #'
 #' @details
 #' This fits a proliferation model on a trace of raw FACS intensities.

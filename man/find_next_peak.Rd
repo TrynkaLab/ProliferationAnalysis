@@ -12,6 +12,22 @@ find_next_peak(
   window.scaling.factors = c(0.25, 0.25)
 )
 }
+\arguments{
+\item{x}{vector of x values (log10 intensity histogram midpoints).}
+
+\item{y}{vector of y values (counts or smoothed counts) matching x in length.}
+
+\item{prev.peak}{x position (log10 scale) of the previous peak.}
+
+\item{peak.dist}{estimated distance between adjacent peaks on the log10 scale.}
+
+\item{window.scaling.factors}{two-element vector scaling the search window
+left and right of the expected next peak position (default c(0.25, 0.25)).}
+}
+\value{
+a numeric vector of length 3: peak mean, peak summit height, and
+  fold enrichment over the flanking valleys.
+}
 \description{
 Find the mode of the next peak using the previous peak and the average peak
 distance. The window can be asymmetrically scaled using the scaling factors.

@@ -34,6 +34,8 @@ fit_peaks(
 )
 }
 \arguments{
+\item{...}{additional arguments passed to \code{find_initial_peaks}.}
+
 \item{trace}{raw FACS intensities}
 
 \item{peak.0.lower.bound}{the value on log10 scale where the first valley is}
@@ -43,49 +45,68 @@ fit_peaks(
 \item{smoothing.window}{number of values up and downstream for the NN
 smoother (default 2)}
 
-\item{plot.optim}{should optimization plots be plotted}
+\item{plot.optim}{logical; if TRUE produce optimisation diagnostic plots
+(default TRUE).}
 
-\item{plot.final}{should final plot of optimized fit be plotted}
+\item{plot.final}{logical; if TRUE produce final per-peak fit plot (default TRUE).}
 
-\item{plot}{should results be plotted. Overrides plot.optim & plot.final}
+\item{plot}{logical; if TRUE produce all plots. Overrides plot.optim and
+plot.final (default TRUE).}
 
-\item{plot.main}{title for the plot}
+\item{plot.main}{character string title for the plot (default "Proliferation model").}
 
-\item{opt.peak.pos.dev}{limits the range in x where peak positions can be
-optimized within. See @details}
+\item{opt.peak.pos.dev}{numeric; maximum allowed deviation of each peak mean
+from its initial estimate during optimisation. Defaults to half the estimated
+inter-peak distance (NULL). Set to Inf to remove constraint. See details.}
 
-\item{window.scaling.factors}{Scaling factors for peak finding See details (default c(0.25, 0.25))}
+\item{window.scaling.factors}{two-element vector scaling the search window
+left and right of each expected peak position during initial estimation
+(default c(0.25, 0.25)). See details.}
 
-\item{opt.trim.left.tail}{Should values that fall outside the initial model
-range be removed from optimization. See @details}
+\item{opt.trim.left.tail}{logical; if TRUE remove data points left of the
+leftmost initial peak estimate before optimisation (default FALSE). See details.}
 
-\item{opt.trim.right.tail}{Should values that fall outside the initial model
-range be removed from optimization. See @details}
+\item{opt.trim.right.tail}{logical; if TRUE remove data points right of the
+rightmost initial peak estimate before optimisation (default FALSE). See details.}
 
-\item{mode}{either LS for least squares or 'MLE' for maximum likelihood
-estimation based optimizer. See @details}
+\item{mode}{character string; \code{"LS"} for Levenberg-Marquardt non-linear
+least squares (default) or \code{"MLE"} for maximum likelihood estimation.
+See details.}
 
-\item{full.out}{If true output a list with everything needed to easily
-re-make plots. Useful if you want to regen plots in ggplot for instance.}
+\item{full.out}{logical; if TRUE return a list containing peak statistics,
+histogram object, x values, model predictions, and final parameters. If FALSE
+return only the peak statistics data frame (default FALSE).}
 
-\item{peak.x.model}{Should an extra peak be fit that models a trace negative
-population of cells. See @details}
+\item{peak.x.model}{logical; if TRUE fit an additional unconstrained peak
+(peak X) to capture a dye-negative cell population (default FALSE). See details.}
 
-\item{peak.x.upper.bound}{If peak.x.model=T, specify the hard limit for
-finding the mode of peak x. Set to NULL for no limit. (default NULL)}
+\item{peak.x.upper.bound}{numeric; hard upper limit (log10 scale) for the
+position of peak X. Set to NULL for no limit (default NULL).}
 
-\item{peak.x.thresh.summit}{Controls the automated detection of the mode of
-peak x. Only peaks with a % of the total data mode of this are considered.
-Should be valued between 0-1. (default 0.05)}
+\item{peak.x.position}{numeric; manually specify the starting position of
+peak X (log10 scale). If NULL, position is estimated automatically (default NULL).}
 
-\item{peak.x.thresh.enrich}{Similar to peak.thresh.enrich but for peak x.
-(default = 1.1)}
+\item{peak.x.fixed}{logical; if TRUE fix peak X at \code{peak.x.position}
+and do not optimise its mean (default FALSE).}
+
+\item{peak.x.thresh.summit}{numeric; minimum height of peak X relative to the
+trace mode for autodetection. Values between 0 and 1 (default 0.05).}
+
+\item{peak.x.thresh.enrich}{numeric; minimum fold enrichment of peak X over
+its flanking valleys for autodetection (default 1.2).}
+
+\item{verbose}{logical; if TRUE print optimisation parameter values at each
+iteration (default FALSE).}
+
+\item{log}{logical; if TRUE use log-scale density in MLE mode (default TRUE).}
+
+\item{peak.thresh.enrich}{fold change over valley to call peak in initial
+estimation (default 1)}
+
+\item{peak.thresh.summit}{minimum height of a peak in percentage of total
+heights (default 0.05)}
 
 \item{peak.max}{the maximum number of peaks to search for (default 12)}
-
-\item{peak.thresh.enrich}{Fold change enrichment of a peak over its valleys}
-
-\item{peak.thresh.summit}{Relative height of a peak with respect to trace mode}
 }
 \value{
 A data frame with peak statistics or list of objects if full.out=T

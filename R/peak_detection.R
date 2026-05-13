@@ -5,6 +5,15 @@
 #' Find the mode of the next peak using the previous peak and the average peak
 #' distance. The window can be asymmetrically scaled using the scaling factors.
 #' This is done as the smaller the peaks get, the closer together they tend to be.
+#'
+#' @param x vector of x values (log10 intensity histogram midpoints).
+#' @param y vector of y values (counts or smoothed counts) matching x in length.
+#' @param prev.peak x position (log10 scale) of the previous peak.
+#' @param peak.dist estimated distance between adjacent peaks on the log10 scale.
+#' @param window.scaling.factors two-element vector scaling the search window
+#'   left and right of the expected next peak position (default c(0.25, 0.25)).
+#' @returns a numeric vector of length 3: peak mean, peak summit height, and
+#'   fold enrichment over the flanking valleys.
 find_next_peak <- function(x, y, prev.peak, peak.dist, window.scaling.factors=c(0.25, 0.25)) {
 
   est.curpeak     <- log10((10^prev.peak)/2)
@@ -22,6 +31,12 @@ find_next_peak <- function(x, y, prev.peak, peak.dist, window.scaling.factors=c(
 
 #-------------------------------------------------------------------------------
 #' Find the relative enrichment over a valley
+#'
+#' @param x vector of x values (log10 intensity histogram midpoints).
+#' @param y vector of y values (counts or smoothed counts) matching x in length.
+#' @param curpeak.mean x position of the current peak mean.
+#' @param est.window half-width of the window used to locate the flanking valleys.
+#' @returns fold change of the peak summit over the mean of the two flanking valley counts.
 find_enrichment <- function(x, y, curpeak.mean, est.window) {
 
   curpeak.summit  <- y[nearest_index(x, curpeak.mean)]
@@ -157,7 +172,11 @@ find_initial_peaks <- function(x, y, peak.0.lower.bound, peak.thresh.enrich=1, p
 #' @param trace raw FACS intensities (log10 scale)
 #' @param peak.x.thresh.summit minimum relative height of peak x
 #' @param peak.x.thresh.enrich minimum enrichment of peak x over valley
-#' @param peak.x.upper.bound hard upper limit for peak x position
+#' @param peak.x.upper.bound hard upper limit for peak x position on the log10
+#'   scale. If the detected mode exceeds this value, NULL is returned.
+#' @param ... additional arguments passed to \code{\link[stats]{density}}.
+#' @returns the log10 x position of the estimated peak x mode, or NULL if no
+#'   valid peak is found within the specified constraints.
 #'
 #' @export
 find_peak_x_approx_mode <- function(trace, peak.x.thresh.summit, peak.x.thresh.enrich, peak.x.upper.bound=NULL, ...) {

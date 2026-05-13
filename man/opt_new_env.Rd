@@ -6,6 +6,15 @@
 \usage{
 opt_new_env(n.peaks)
 }
+\arguments{
+\item{n.peaks}{integer number of peaks; sets the number of columns in the
+logged parameter matrices.}
+}
+\value{
+an environment with pre-allocated fields: \code{score} (numeric
+  vector), \code{means}, \code{sd}, and \code{summits} (matrices with
+  \code{n.peaks} columns).
+}
 \description{
 Create a new env for storing optimization trace
 }

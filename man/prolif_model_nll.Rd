@@ -15,6 +15,29 @@ prolif_model_nll(
   opt.env = NULL
 )
 }
+\arguments{
+\item{means}{numeric vector of peak means (log10 scale).}
+
+\item{sd}{numeric vector of peak standard deviations, one per peak.}
+
+\item{summits}{numeric vector of mixture weights (will be normalised to sum to 1).}
+
+\item{x}{numeric vector of observed data values (log10 intensities).}
+
+\item{verbose}{logical; if TRUE print the NLL at each call (default FALSE).}
+
+\item{log}{logical; if TRUE compute density on the log scale for numerical
+stability (default TRUE).}
+
+\item{invert}{logical; if TRUE return the positive log likelihood instead of
+the negative (default FALSE).}
+
+\item{opt.env}{optional environment created by \code{opt_new_env} for logging
+parameter traces during optimisation (default NULL).}
+}
+\value{
+scalar negative log likelihood value.
+}
 \description{
 Negative log likelihood of mixture distribution of Gaussian
 }

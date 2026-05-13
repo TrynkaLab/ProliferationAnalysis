@@ -16,13 +16,20 @@ find_peak_x_approx_mode(
 )
 }
 \arguments{
+\item{...}{additional arguments passed to \code{\link[stats]{density}}.}
+
 \item{trace}{raw FACS intensities (log10 scale)}
 
 \item{peak.x.thresh.summit}{minimum relative height of peak x}
 
 \item{peak.x.thresh.enrich}{minimum enrichment of peak x over valley}
 
-\item{peak.x.upper.bound}{hard upper limit for peak x position}
+\item{peak.x.upper.bound}{hard upper limit for peak x position on the log10
+scale. If the detected mode exceeds this value, NULL is returned.}
+}
+\value{
+the log10 x position of the estimated peak x mode, or NULL if no
+  valid peak is found within the specified constraints.
 }
 \description{
 Find the mode of the first left sided peak in the data, given some constraints.

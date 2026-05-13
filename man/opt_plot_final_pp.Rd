@@ -6,6 +6,20 @@
 \usage{
 opt_plot_final_pp(x.mids, y, ps, main = "Optimal fit vs data")
 }
+\arguments{
+\item{x.mids}{numeric vector of histogram midpoints (log10 scale).}
+
+\item{y}{numeric vector of observed counts matching x.mids in length.}
+
+\item{ps}{data frame of peak statistics as returned by \code{fit_peaks},
+containing columns \code{opt_mean}, \code{opt_peak_sd}, \code{peak_area_prop},
+and \code{peak_events}.}
+
+\item{main}{character string plot title (default "Optimal fit vs data").}
+}
+\value{
+NULL invisibly; called for its side effect of producing a plot.
+}
 \description{
 Plot optimization of parameters per peak
 }
