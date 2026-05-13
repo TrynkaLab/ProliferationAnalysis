@@ -373,12 +373,12 @@ legend("topright",
 # Evaluate FCS express vs this data
 ```{r, eval=F, echo=F}
 library(minpack.lm)
-library(readxl)
 library(flowCore)
 #source("R/proliferation_modeling_functions.r")
 #source("R/proliferation_plotting_functions.r")
 devtools::install_github("https://github.com/OlivierBakker/ProliferationAnalysis/tree/main")
 library(ProliferationAnalysis)
+library(readxl)
 source("~/Documents/tools/rscripts/plotting_functions.r")
 
 fcs.express <- as.data.frame(read_excel("~/Documents/projects/r_packages/ProliferationAnalysisTestData/p24-27_testset/fcs_express_prolif_stats.xlsx"))
