@@ -211,6 +211,9 @@ opt_prolif_model_ls <- function(x, y, starts, upper, lower, fixed, peak.stats, p
 #' trace mode for autodetection. Values between 0 and 1 (default 0.05).
 #' @param peak.x.thresh.enrich numeric; minimum fold enrichment of peak X over
 #' its flanking valleys for autodetection (default 1.2).
+#' @param peak.x.sd numeric; upper bound for the SD of peak X during
+#' optimisation. If NULL, the upper bound defaults to the same as the shared
+#' \code{peak.sd} upper bound (default NULL).
 #' @param verbose logical; if TRUE print optimisation parameter values at each
 #' iteration (default FALSE).
 #' @param log logical; if TRUE use log-scale density in MLE mode (default TRUE).
@@ -330,6 +333,7 @@ fit_peaks  <- function(trace,
                        peak.x.fixed=F,
                        peak.x.thresh.summit=0.05,
                        peak.x.thresh.enrich=1.2,
+                       peak.x.sd=NULL,
                        verbose=F,
                        log=T,
                        ...) {
@@ -474,7 +478,7 @@ fit_peaks  <- function(trace,
   if (peak.x.model) {
     starts[["genX.sd"]] <- starts$peak.sd*2
     lower[["genX.sd"]]  <- lower["peak.sd"]
-    upper[["genX.sd"]]  <- upper["peak.sd"]
+    upper[["genX.sd"]]  <- if (!is.null(peak.x.sd)) peak.x.sd else upper["peak.sd"]
 
     if (!is.null(peak.x.upper.bound)) {
       upper[[par.means[length(par.means)]]] <- peak.x.upper.bound
