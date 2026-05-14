@@ -77,8 +77,17 @@ opt_plot_final <- function(x.mids, y, y.pred.optim, main="Optimal fit vs data") 
 #'   containing columns \code{opt_mean}, \code{opt_peak_sd}, \code{peak_area_prop},
 #'   and \code{peak_events}.
 #' @param main character string plot title (default "Optimal fit vs data").
+#' @param peak.x.model logical; if TRUE the last row of \code{ps} is peak X and
+#'   its individual density is drawn in orange (default FALSE).
+#' @param peak.0.lower.bound numeric; if supplied, a grey dashed vertical line is
+#'   drawn at this log10 position marking the generation-0 lower bound (default NULL).
+#' @param peak.x.upper.bound numeric; if supplied, a grey dashed vertical line is
+#'   drawn at this log10 position marking the hard upper limit for peak X (default NULL).
 #' @returns NULL invisibly; called for its side effect of producing a plot.
-opt_plot_final_pp <- function(x.mids, y, ps, main="Optimal fit vs data") {
+opt_plot_final_pp <- function(x.mids, y, ps, main="Optimal fit vs data",
+                              peak.x.model=FALSE,
+                              peak.0.lower.bound=NULL,
+                              peak.x.upper.bound=NULL) {
 
   plot(x.mids, y,
        main=main,
@@ -90,21 +99,36 @@ opt_plot_final_pp <- function(x.mids, y, ps, main="Optimal fit vs data") {
   binwidth     <- (x.mids[2] - x.mids[1])
 
   for (i in 1:nrow(ps)) {
-    range <- x.mids
-    y.single <- dnorm(range,  ps[i,]$opt_mean, ps[i,]$opt_peak_sd)
+    range    <- x.mids
+    y.single <- dnorm(range, ps[i,]$opt_mean, ps[i,]$opt_peak_sd)
     y.single <- y.single * ps[i,]$peak_area_prop/100
     y.single <- (y.single*binwidth) * sum(ps$peak_events)
 
-    lines(range, y.single, col="black")
+    peak_col <- if (peak.x.model && i == nrow(ps)) "orange" else "black"
+    lines(range, y.single, col=peak_col)
   }
 
   dens <- exp(prolif_model_density(ps$opt_mean, ps$opt_peak_sd, ps$peak_area_prop, x.mids, log=T))
-  lines(x.mids, (dens*binwidth) *sum(ps$peak_events), col="red", lwd=2)
+  lines(x.mids, (dens*binwidth) * sum(ps$peak_events), col="red", lwd=2)
 
-  legend("topleft",
-         legend=c("Data", "Optimized fit", "Single peaks"),
-         fill=c("grey", "red", "black"),
-         bty="n")
+  if (!is.null(peak.0.lower.bound)) {
+    abline(v=peak.0.lower.bound, col="darkgrey", lty=2)
+  }
+  if (!is.null(peak.x.upper.bound)) {
+    abline(v=peak.x.upper.bound, col="darkgrey", lty=2)
+  }
+
+  if (peak.x.model) {
+    legend("topleft",
+           legend=c("Data", "Optimized fit", "Single peaks", "Peak X"),
+           fill=c("grey", "red", "black", "orange"),
+           bty="n")
+  } else {
+    legend("topleft",
+           legend=c("Data", "Optimized fit", "Single peaks"),
+           fill=c("grey", "red", "black"),
+           bty="n")
+  }
 }
 
 #-------------------------------------------------------------------------------

@@ -499,9 +499,9 @@ fit_peaks  <- function(trace,
   if (verbose) {
     cat("[INFO] starting params: ", "\n")
     print(starts)
-    cat("[INFO] starting upper:  ", "\n")
+    cat("[INFO] upper:  ", "\n")
     print(upper)
-    cat("[INFO] starting lower:  ", "\n")
+    cat("[INFO] lower:  ", "\n")
     print(lower)
     cat("[INFO] number of bins:  ", length(x.mids), "\n")
   }
@@ -604,7 +604,10 @@ fit_peaks  <- function(trace,
 
   #-----------------------------------------------------------------------------
   if (plot.final) {
-    opt_plot_final_pp(x.mids, cur.hist$counts, peak.stats, main=plot.main)
+    opt_plot_final_pp(x.mids, cur.hist$counts, peak.stats, main=plot.main,
+                      peak.x.model=peak.x.model,
+                      peak.0.lower.bound=peak.0.lower.bound,
+                      peak.x.upper.bound=peak.x.upper.bound)
   }
 
   if (full.out) {

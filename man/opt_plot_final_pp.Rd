@@ -4,7 +4,15 @@
 \alias{opt_plot_final_pp}
 \title{Plot optimization of parameters per peak}
 \usage{
-opt_plot_final_pp(x.mids, y, ps, main = "Optimal fit vs data")
+opt_plot_final_pp(
+  x.mids,
+  y,
+  ps,
+  main = "Optimal fit vs data",
+  peak.x.model = FALSE,
+  peak.0.lower.bound = NULL,
+  peak.x.upper.bound = NULL
+)
 }
 \arguments{
 \item{x.mids}{numeric vector of histogram midpoints (log10 scale).}
@@ -16,6 +24,15 @@ containing columns \code{opt_mean}, \code{opt_peak_sd}, \code{peak_area_prop},
 and \code{peak_events}.}
 
 \item{main}{character string plot title (default "Optimal fit vs data").}
+
+\item{peak.x.model}{logical; if TRUE the last row of \code{ps} is peak X and
+its individual density is drawn in orange (default FALSE).}
+
+\item{peak.0.lower.bound}{numeric; if supplied, a grey dashed vertical line is
+drawn at this log10 position marking the generation-0 lower bound (default NULL).}
+
+\item{peak.x.upper.bound}{numeric; if supplied, a grey dashed vertical line is
+drawn at this log10 position marking the hard upper limit for peak X (default NULL).}
 }
 \value{
 NULL invisibly; called for its side effect of producing a plot.
