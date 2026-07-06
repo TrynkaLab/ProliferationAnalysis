@@ -9,8 +9,9 @@ The input is expected to be raw per-event intensities of the division dye. If yo
 # Installation
 To install, simply run
 ```
-devtools::install_github("https://github.com/OlivierBakker/ProliferationAnalysis/tree/main")
+remotes::install_github("TrynkaLab/ProliferationAnalysis")
 ```
+
 Code is all in base R except for the Levanberg-Marquad algorithm which uses
 the implementation in minpack.lm
 
@@ -38,6 +39,6 @@ get_prolif_stats(fit)
 ```
 
 
-For more details, see the vingette: <a href="https://html-preview.github.io/?url=https://github.com/OlivierBakker/ProliferationAnalysis/blob/main/vignettes/fitting_proliferation_model.html" >Fitting a proliferation model with complex mixture</a>
+For more details, see the vingette: <a href="https://html-preview.github.io/?url=https://github.com/TrynkaLab/ProliferationAnalysis/blob/main/vignettes/fitting_proliferation_model.html" >Fitting a proliferation model with complex mixture</a>
 
 See `?fit_peaks` and `?get_prolif_stats` for details on all the parameters.
